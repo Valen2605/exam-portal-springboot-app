@@ -108,4 +108,21 @@ public class AuthController {
         response.setSuccess(true);
         return new ResponseEntity<SuccessandMessageDto>(response, HttpStatus.OK);
     }
+
+    @PostMapping("api/v1/studentLogin")
+    public ResponseEntity<StudentLoginResponseDto> studentLogin(@RequestBody StudentLoginDto studentLoginDto){
+        System.out.println("studentLogin");
+        customUserDetailsService.setUserType(UserType.STUDENT);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(studentLoginDto.getEamil(), studentLoginDto.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtGenerator.generateToken(authentication, UserType.STUDENT.toString());
+        StudentLoginResponseDto responseDto = new StudentLoginResponseDto();
+        responseDto.setSuccess(true);
+        responseDto.setMessage("login successful !!");
+        responseDto.setToken(token);
+        StudentEntity student = studentRepo.findByEmail(studentLoginDto.getEmail()).orElseThrow();
+        responseDto.setStudent(student.getName(), student.getEmail(), student.getId());
+        return new ResponseEntity<StudentLoginResponseDto>(responseDto, HttpStatus.OK)
+    }
 }
