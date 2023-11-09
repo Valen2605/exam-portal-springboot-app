@@ -2,6 +2,7 @@ package com.valentina.examportalspringbootapp.controller;
 
 
 import com.valentina.examportalspringbootapp.model.AdminEntity;
+import com.valentina.examportalspringbootapp.model.StudentEntity;
 import com.valentina.examportalspringbootapp.model.TeacherEntity;
 import com.valentina.examportalspringbootapp.model.UserType;
 import com.valentina.examportalspringbootapp.security.JwtGenerator;
@@ -86,5 +87,25 @@ public class AuthController {
         TeacherEntity teacher = teacherRepo.findByEmail(teacherLoginDto.getEmail()).orElseThrow();
         responseDto.setTeacher(teacher.getName(), teacher.getEmail(), teacher.getId());
         return new ResponseEntity<TeacherLoginResponseDto>(responseDto, HttpStatus.OK);
+    }
+
+    @PostMapping("api/v1/studentRegister")
+    public ResponseEntity<SuccessandMessageDto> studentRegister(@RequestBody StudentRegisterDto studentRegisterDto){
+        System.out.println("studentRegister");
+        SuccessandMessageDto response = new SuccessandMessageDto();
+        if(studentRepo.existsByEmail(studentRegisterDto.getEmail())) {
+            response.setMessage("Email is already registered !!");
+            response.setSuccess(false);
+            return new ResponseEntity<SuccessandMessageDto>(response, HttpStatus.BAD_REQUEST);
+        }
+        StudentEntity studentEntity = new StudentEntity();
+        studentEntity.setName(studentRegisterDto.getUsername());
+        studentEntity.setPassword(passwordEncoder.encode(studentRegisterDto.getPassword()));
+        studentEntity.setEmail(studentRegisterDto.getEmail());
+        studentEntity.setStatus(true);
+        studentRepo.save(studentEntity);
+        response.setMessage("Profile Created Successfully !!");
+        response.setSuccess(true);
+        return new ResponseEntity<SuccessandMessageDto>(response, HttpStatus.OK);
     }
 }
