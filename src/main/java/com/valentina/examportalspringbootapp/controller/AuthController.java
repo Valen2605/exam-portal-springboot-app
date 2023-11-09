@@ -2,6 +2,7 @@ package com.valentina.examportalspringbootapp.controller;
 
 
 import com.valentina.examportalspringbootapp.model.AdminEntity;
+import com.valentina.examportalspringbootapp.model.TeacherEntity;
 import com.valentina.examportalspringbootapp.model.UserType;
 import com.valentina.examportalspringbootapp.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +69,22 @@ public class AuthController {
         AdminEntity admin = adminRepo.findByUsername(adminAuthDto.getUsername()).orElseThrow();
         responseDto.setAdmin(admin.getUsername(), admin.getId());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @PostMapping("api/v1/teacherLogin")
+    public ResponseEntity<TeacherLoginResponseDto> teacherLogin(@RequestBody TeacherLoginDto teacherLoginDto){
+        System.out.println("teacherLogin");
+        customUserDetailsService.setUserType(UserType.TEACHER);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(teacherLoginDto.getEmail(), teacherLoginDto.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtGenerator.generateToken(authentication, UserType.TEACHER.toString());
+        TeacherLoginResponseDto responseDto = new TeacherLoginResponseDto();
+        responseDto.setSuccess(true);
+        responseDto.setMessage("login successful !!");
+        responseDto.setToken(token);
+        TeacherEntity teacher = teacherRepo.findByEmail(teacherLoginDto.getEmail()).orElseThrow();
+        responseDto.setTeacher(teacher.getName(), teacher.getEmail(), teacher.getId());
+        return new ResponseEntity<TeacherLoginResponseDto>(responseDto, HttpStatus.OK);
     }
 }
