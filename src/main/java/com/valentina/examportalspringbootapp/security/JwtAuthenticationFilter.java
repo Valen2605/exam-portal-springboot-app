@@ -21,10 +21,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private CustomUserDetailsService customUserDetailsService;
 
+    public JwtAuthenticationFilter() {
+    }
+
     public JwtAuthenticationFilter(JwtGenerator jwtGenerator, CustomUserDetailsService customUserDetailsService) {
         this.jwtGenerator = jwtGenerator;
         this.customUserDetailsService = customUserDetailsService;
     }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
