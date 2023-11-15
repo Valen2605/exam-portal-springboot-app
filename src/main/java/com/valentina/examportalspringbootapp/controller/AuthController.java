@@ -123,6 +123,6 @@ public class AuthController {
         responseDto.setToken(token);
         StudentEntity student = studentRepo.findByEmail(studentLoginDto.getEmail()).orElseThrow();
         responseDto.setStudent(student.getName(), student.getEmail(), student.getId());
-        return new ResponseEntity<StudentLoginResponseDto>(responseDto, HttpStatus.OK)
+        return new ResponseEntity<StudentLoginResponseDto>(responseDto, HttpStatus.OK);
     }
 }
