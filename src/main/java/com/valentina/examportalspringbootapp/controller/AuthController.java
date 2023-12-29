@@ -1,10 +1,12 @@
 package com.valentina.examportalspringbootapp.controller;
 
 
+import com.valentina.examportalspringbootapp.dto.AdminAuthDto;
 import com.valentina.examportalspringbootapp.model.AdminEntity;
 import com.valentina.examportalspringbootapp.model.StudentEntity;
 import com.valentina.examportalspringbootapp.model.TeacherEntity;
 import com.valentina.examportalspringbootapp.model.UserType;
+import com.valentina.examportalspringbootapp.security.CustomUserDetailsService;
 import com.valentina.examportalspringbootapp.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
